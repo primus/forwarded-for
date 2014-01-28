@@ -38,7 +38,8 @@ var proxies = [
     proto: 'forwarded-proto'    // Estimated guess, no standard header available.
   }, {
     ip: 'x-real-ip',
-    port: 'x-real-port'         // Estimated guess, no standard header available.
+    port: 'x-real-port',        // Estimated guess, no standard header available.
+    proto: 'x-real-proto'       // Estimated guess, no standard header available.
   }
 ];
 
