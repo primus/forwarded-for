@@ -1,0 +1,29 @@
+{
+  "name": "forwarded-for",
+  "version": "0.0.0",
+  "description": "Abstraction for retrieving ip address information from a Node.js connection. Searches for proxy headers before degrading req.address",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/primus/forwarded-for.git"
+  },
+  "keywords": [
+    "x-forwarded-for",
+    "forwarded-for",
+    "ip",
+    "address",
+    "parser",
+    "x-forwarded-proto",
+    "z-forwarded-for",
+    "x-real-ip"
+  ],
+  "author": "Arnout Kazemier",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/primus/forwarded-for/issues"
+  },
+  "homepage": "https://github.com/primus/forwarded-for"
+}
