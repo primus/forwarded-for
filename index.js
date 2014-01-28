@@ -51,12 +51,14 @@ var proxies = [
  * @returns {String|Undefined} A IP address or nothing.
  * @api private
  */
-function forwarded(headers) {
-  for (var i = 0, length = proxies.length; i < length; i++) {
+function forwarded(headers, whitelist) {
+  var ports, port, ips, ip, length = proxies.length, i = 0;
+
+  for (; i < length; i++) {
     if (!(proxies[i].ip in headers)) continue;
 
-    var ports = (headers[proxies[i].port] || '').split(',')
-      , ips = (headers[proxies[i].ip] || '').split(',');
+    ports = (headers[proxies[i].port] || '').split(',');
+    ips = (headers[proxies[i].ip] || '').split(',');
 
     //
     // As these headers can potentially be set by a 1337H4X0R we need to ensure
@@ -66,6 +68,17 @@ function forwarded(headers) {
     //
     if (!ips.length || !ips.every(net.isIP)) return;
 
+    port = ports.shift();   // Extract the first port as it's the "source" port.
+    ip = ips.shift();       // Extract the first IP as it's the "source" IP.
+
+    //
+    // If we were given a white list, we need to ensure that the proxies that
+    // we're given are known and allowed.
+    //
+    if (whitelist && whitelist.length && !ips.every(function every(ip) {
+      return ~whitelist.indexOf(ip.trim());
+    })) return;
+
     //
     // We've gotten a match on a HTTP header, we need to parse it further as it
     // could consist of multiple hops. The pattern for multiple hops is:
@@ -74,7 +87,7 @@ function forwarded(headers) {
     //
     // So extracting the first IP should be sufficient.
     //
-    return new Forwarded(ips.shift(), ports.shift());
+    return new Forwarded(ip, port);
   }
 }
 
