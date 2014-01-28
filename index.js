@@ -3,6 +3,20 @@
 var net = require('net');
 
 /**
+ * Forwarded instance.
+ *
+ * @param {String} ip The IP address.
+ * @param {Number} port The port number.
+ * @param {Boolean} secured The connection was secured.
+ * @api private
+ */
+function Forwarded(ip, port, secured) {
+  this.ip = ip || '127.0.0.1';
+  this.secure = !!secured;
+  this.port = +port || 0;
+}
+
+/**
  * List of possible proxy headers that should be checked for the original client
  * IP address and forwarded port.
  *
@@ -27,18 +41,6 @@ var proxies = [
     port: 'x-real-port'         // Estimated guess, no standard header available.
   }
 ];
-
-/**
- * Default IP address and port that should be returned when don't find any
- * (valid) matches.
- *
- * @type {Object}
- * @private
- */
-var defaults = {
-  ip: '127.0.0.1',
-  port: 0
-};
 
 /**
  * Search the headers for a possible match against a known proxy header.
@@ -71,10 +73,7 @@ function forwarded(headers) {
     //
     // So extracting the first IP should be sufficient.
     //
-    return {
-      port: +ports.shift() || defaults.port,
-      ip: ips.shift() || defaults.ip
-    };
+    return new Forwarded(ips.shift(), ports.shift());
   }
 }
 
@@ -87,7 +86,7 @@ function forwarded(headers) {
  * @returns {String} The IP address.
  * @api private
  */
-function parse(obj, headers, whitelist) {
+module.exports = function parse(obj, headers, whitelist) {
   var proxied = forwarded(headers, whitelist)
     , connection = obj.connection
     , socket = connection
@@ -98,34 +97,41 @@ function parse(obj, headers, whitelist) {
   // We should always be testing for HTTP headers as remoteAddress would point
   // to proxies.
   //
-  if (proxied) return proxied;
+  if (proxied) {
+    return proxied;
+  }
 
   // Check for the property on our given object.
-  if ('remoteAddress' in obj) return {
-    port: +obj.remotePort || defaults.port,
-    ip: obj.remoteAddress || defaults.ip
-  };
+  if ('object' === typeof obj) {
+    if ('remoteAddress' in obj) {
+      return new Forwarded(
+        obj.remoteAddress,
+        obj.remotePort
+      );
+    }
 
-  // Edge case for Socket.IO and SockJS.
-  if ('address' in obj && 'port' in obj) return {
-    port: +obj.port || defaults.port,
-    ip: obj.address || defaults.ip
-  };
+    // Edge case for Socket.IO and SockJS.
+    if ('address' in obj && 'port' in obj) {
+      return new Forwarded(
+        obj.address,
+        obj.port
+      );
+    }
+  }
 
-  if (connection && 'remoteAddress' in connection) return {
-    port: +connection.remotePort || defaults.port,
-    ip: connection.remoteAddress || defaults.ip
-  };
+  if ('object' === typeof connection && 'remoteAddress' in connection) {
+    return new Forwarded(
+      connection.remoteAddress,
+      connection.remotePort
+    );
+  }
 
-  if (socket && 'remoteAddress' in socket) return {
-    port: +socket.remotePort || defaults.port,
-    ip: socket.remoteAddress || defaults.ip
-  };
+  if ('object' === typeof socket && 'remoteAddress' in socket) {
+    return new Forwarded(
+      socket.remoteAddress,
+      socket.remoteAddress
+    );
+  }
 
-  return defaults;
-}
-
-//
-// Expose the module.
-//
-module.exports = parse;
+  return new Forwarded();
+};
