@@ -52,13 +52,14 @@ var proxies = [
  * @api private
  */
 function forwarded(headers, whitelist) {
-  var ports, port, ips, ip, length = proxies.length, i = 0;
+  var ports, port, proto, ips, ip, length = proxies.length, i = 0;
 
   for (; i < length; i++) {
     if (!(proxies[i].ip in headers)) continue;
 
     ports = (headers[proxies[i].port] || '').split(',');
     ips = (headers[proxies[i].ip] || '').split(',');
+    proto = (headers[proxies[i].proto] || 'http');
 
     //
     // As these headers can potentially be set by a 1337H4X0R we need to ensure
@@ -87,7 +88,7 @@ function forwarded(headers, whitelist) {
     //
     // So extracting the first IP should be sufficient.
     //
-    return new Forwarded(ip, port);
+    return new Forwarded(ip, port, proto === 'https');
   }
 }
 
@@ -120,7 +121,8 @@ module.exports = function parse(obj, headers, whitelist) {
     if ('remoteAddress' in obj) {
       return new Forwarded(
         obj.remoteAddress,
-        obj.remotePort
+        obj.remotePort,
+        obj.encrypted
       );
     }
 
@@ -128,7 +130,8 @@ module.exports = function parse(obj, headers, whitelist) {
     if ('address' in obj && 'port' in obj) {
       return new Forwarded(
         obj.address,
-        obj.port
+        obj.port,
+        obj.encrypted
       );
     }
   }
@@ -136,14 +139,16 @@ module.exports = function parse(obj, headers, whitelist) {
   if ('object' === typeof connection && 'remoteAddress' in connection) {
     return new Forwarded(
       connection.remoteAddress,
-      connection.remotePort
+      connection.remotePort,
+      connection.encrypted
     );
   }
 
   if ('object' === typeof socket && 'remoteAddress' in socket) {
     return new Forwarded(
       socket.remoteAddress,
-      socket.remoteAddress
+      socket.remoteAddress,
+      socket.encrypted
     );
   }
 
