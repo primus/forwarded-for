@@ -50,7 +50,7 @@ following arguments:
 So with all the information combined, it would look something like this:
 
 ```js
-'use stict';
+'use strict';
 
 var forwarded = require('forwarded-for');
 
