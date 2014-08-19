@@ -25,6 +25,11 @@ function Forwarded(ip, port, secured) {
  */
 var proxies = [
   {
+    ip: 'fastly-client-ip',
+    port: 'fastly-client-port', // Estimated guess, no standard header available.
+    proto: 'fastly-ssl'
+  },
+  {
     ip: 'x-forwarded-for',
     port: 'x-forwarded-port',
     proto: 'x-forwarded-proto'
@@ -86,9 +91,12 @@ function forwarded(headers, whitelist) {
     //
     //   client, proxy, proxy, proxy, etc.
     //
-    // So extracting the first IP should be sufficient.
+    // So extracting the first IP should be sufficient. There are SSL
+    // terminators like the once's that is used by `fastly.com` which set their
+    // HTTPS header to `1` as an indication that the connection was secure.
+    // (This reduces bandwidth)
     //
-    return new Forwarded(ip, port, proto === 'https');
+    return new Forwarded(ip, port, proto === '1' || proto === 'https');
   }
 }
 
