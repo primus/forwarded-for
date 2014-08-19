@@ -4,7 +4,7 @@
   "description": "Abstraction for retrieving ip address information from a Node.js connection. Searches for proxy headers before degrading req.address",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec --ui bdd test.js"
   },
   "repository": {
     "type": "git",
@@ -22,12 +22,19 @@
     "x-forwarded-for",
     "x-forwarded-proto",
     "x-real-ip",
-    "z-forwarded-for"
+    "z-forwarded-for",
+    "z-scaler",
+    "zscaler"
   ],
   "author": "Arnout Kazemier",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/primus/forwarded-for/issues"
   },
-  "homepage": "https://github.com/primus/forwarded-for"
+  "homepage": "https://github.com/primus/forwarded-for",
+  "devDependencies": {
+    "assume": "0.0.x",
+    "mocha": "1.21.x",
+    "pre-commit": "0.0.x"
+  }
 }

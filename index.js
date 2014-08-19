@@ -5,6 +5,7 @@ var net = require('net');
 /**
  * Forwarded instance.
  *
+ * @constructor
  * @param {String} ip The IP address.
  * @param {Number} port The port number.
  * @param {Boolean} secured The connection was secured.
@@ -120,9 +121,7 @@ module.exports = function parse(obj, headers, whitelist) {
   // We should always be testing for HTTP headers as remoteAddress would point
   // to proxies.
   //
-  if (proxied) {
-    return proxied;
-  }
+  if (proxied) return proxied;
 
   // Check for the property on our given object.
   if ('object' === typeof obj) {
@@ -130,16 +129,16 @@ module.exports = function parse(obj, headers, whitelist) {
       return new Forwarded(
         obj.remoteAddress,
         obj.remotePort,
-        obj.encrypted
+        'secure' in obj ? obj.secure : obj.encrypted
       );
     }
 
-    // Edge case for Socket.IO and SockJS.
-    if ('address' in obj && 'port' in obj) {
+    // Edge case for Socket.IO 0.9
+    if ('object' === typeof obj.address && obj.address.address) {
       return new Forwarded(
-        obj.address,
-        obj.port,
-        obj.encrypted
+        obj.address.address,
+        obj.address.port,
+        'secure' in obj ? obj.secure : obj.encrypted
       );
     }
   }
@@ -148,7 +147,7 @@ module.exports = function parse(obj, headers, whitelist) {
     return new Forwarded(
       connection.remoteAddress,
       connection.remotePort,
-      connection.encrypted
+      'secure' in connection ? connection.secure : connection.encrypted
     );
   }
 
@@ -156,7 +155,7 @@ module.exports = function parse(obj, headers, whitelist) {
     return new Forwarded(
       socket.remoteAddress,
       socket.remoteAddress,
-      socket.encrypted
+      'secure' in socket ? socket.secure : socket.encrypted
     );
   }
 
