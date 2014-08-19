@@ -111,7 +111,7 @@ function forwarded(headers, whitelist) {
  * @api private
  */
 module.exports = function parse(obj, headers, whitelist) {
-  var proxied = forwarded(headers, whitelist)
+  var proxied = forwarded(headers || {}, whitelist)
     , connection = obj.connection
     , socket = connection
       ? connection.socket

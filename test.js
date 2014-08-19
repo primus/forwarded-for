@@ -8,6 +8,44 @@ describe('forwarded-for', function () {
     assume(parser).is.a('function');
   });
 
+  it('extracts the `remoteAdress` and port from the given object', function() {
+    var forwarded = parser({
+      remoteAddress: '222.1.2.242',
+      remotePort: 490
+    });
+
+    assume(forwarded.ip).to.equal('222.1.2.242');
+    assume(forwarded.port).to.equal(490);
+    assume(forwarded.secure).to.equal(false);
+  });
+
+  it('`encrypted` is used to check connection is secure', function () {
+    var forwarded = parser({
+      remoteAddress: '222.1.2.242',
+      remotePort: 490,
+      encrypted: true
+    });
+
+    assume(forwarded.ip).to.equal('222.1.2.242');
+    assume(forwarded.port).to.equal(490);
+    assume(forwarded.secure).to.equal(true);
+  });
+
+  it('prefers the x-forwarded-* headers over the supplied object', function () {
+    var forwarded = parser({
+      remoteAddress: '127.1.2.0',
+      remotePort: 490
+    }, {
+      'x-forwarded-for': '72.1.80.224',
+      'x-forwarded-port': '9093',
+      'x-forwarded-proto': 'https'
+    });
+
+    assume(forwarded.ip).to.equal('72.1.80.224');
+    assume(forwarded.port).to.equal(9093);
+    assume(forwarded.secure).to.equal(true);
+  });
+
   describe('fastly.com', function () {
     it('extracts information from fastly headers', function () {
       var forwarded = parser({}, {
