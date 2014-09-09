@@ -16,7 +16,7 @@ describe('forwarded-for', function () {
     assume(parser.Forwarded).to.be.a('function');
   });
 
-  it.only('sorts the proxy array and sets the last match as first item', function () {
+  it('sorts the proxy array and sets the last match as first item', function () {
     var last = parser.proxies[parser.proxies.length - 1]
       , spec = { ip: '222.1.2.242', port: '4900', proto: 'https' };
 
