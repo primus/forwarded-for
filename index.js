@@ -87,6 +87,15 @@ function forwarded(headers, whitelist) {
     })) return;
 
     //
+    // Shift the most recently found proxy header to the front of the proxies
+    // array. This optimizes future calls, placing the most commonly found headers
+    // near the front of the array.
+    //
+    if (i !== 1) {
+      proxies.unshift(proxies.splice(i, 1)[0]); 
+    }
+
+    //
     // We've gotten a match on a HTTP header, we need to parse it further as it
     // could consist of multiple hops. The pattern for multiple hops is:
     //

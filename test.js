@@ -45,6 +45,30 @@ describe('forwarded-for', function () {
     assume(forwarded.port).to.equal(9093);
     assume(forwarded.secure).to.equal(true);
   });
+  
+  it('works when shuffling the proxies array', function() {
+    var i = 0, forwarded, hs = [
+      {headers: {'fastly-client-ip': '1.2.3.4'}, expected: '1.2.3.4'},
+      {headers: {'x-forwarded-for': '9.9.9.9'}, expected: '9.9.9.9'},
+      {headers: {'forwarded': '3.4.5.6'}, expected: '3.4.5.6'},
+      {headers: {'x-real-ip': '7.8.9.10'}, expected: '7.8.9.10'},
+    ];
+    
+    // Fisher-Yates shuffle
+    function shuffle(o){ //v1.0
+        for (var j, x, i = o.length; i;
+          j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    };
+    
+    for (; i < 8; i++) {
+      hs = shuffle(hs);
+      hs.forEach(function(v) {
+        forwarded = parser({}, v.headers);
+        assume(forwarded.ip).to.equal(v.expected);
+      });
+    }
+  });
 
   describe('fastly.com', function () {
     it('extracts information from fastly headers', function () {
