@@ -91,8 +91,8 @@ function forwarded(headers, whitelist) {
     // array. This optimizes future calls, placing the most commonly found headers
     // near the front of the array.
     //
-    if (i !== 1) {
-      proxies.unshift(proxies.splice(i, 1)[0]); 
+    if (i !== 0) {
+      proxies.unshift(proxies.splice(i, 1)[0]);
     }
 
     //
@@ -119,7 +119,7 @@ function forwarded(headers, whitelist) {
  * @returns {String} The IP address.
  * @api private
  */
-module.exports = function parse(obj, headers, whitelist) {
+function parse(obj, headers, whitelist) {
   var proxied = forwarded(headers || {}, whitelist)
     , connection = obj.connection
     , socket = connection
@@ -169,4 +169,12 @@ module.exports = function parse(obj, headers, whitelist) {
   }
 
   return new Forwarded();
-};
+}
+
+//
+// Expose the module and all of it's interfaces.
+//
+parse.Forwarded = Forwarded;
+parse.forwarded = forwarded;
+parse.proxies = proxies;
+module.exports = parse;

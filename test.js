@@ -8,6 +8,34 @@ describe('forwarded-for', function () {
     assume(parser).is.a('function');
   });
 
+  it('exposes the proxy array', function () {
+    assume(parser.proxies).to.be.a('array');
+  });
+
+  it('exposes the Forwarded class', function () {
+    assume(parser.Forwarded).to.be.a('function');
+  });
+
+  it.only('sorts the proxy array and sets the last match as first item', function () {
+    var last = parser.proxies[parser.proxies.length - 1]
+      , spec = { ip: '222.1.2.242', port: '4900', proto: 'https' };
+
+    assume(parser.proxies[0].ip).to.not.equal(last.ip);
+
+    var forwarded = parser({
+      remoteAddress: '127.1.2.0',
+      remotePort: 490
+    }, Object.keys(spec).reduce(function reduce(headers, key) {
+      headers[last[key]] = spec[key];
+      return headers;
+    }, {}));
+
+    assume(parser.proxies[0].ip).to.equal(last.ip);
+    assume(forwarded.ip).to.equal('222.1.2.242');
+    assume(forwarded.port).to.equal(4900);
+    assume(forwarded.secure).to.equal(true);
+  });
+
   it('extracts the `remoteAdress` and port from the given object', function() {
     var forwarded = parser({
       remoteAddress: '222.1.2.242',
@@ -45,7 +73,7 @@ describe('forwarded-for', function () {
     assume(forwarded.port).to.equal(9093);
     assume(forwarded.secure).to.equal(true);
   });
-  
+
   it('works when shuffling the proxies array', function() {
     var i = 0, forwarded, hs = [
       {headers: {'fastly-client-ip': '1.2.3.4'}, expected: '1.2.3.4'},
@@ -53,14 +81,14 @@ describe('forwarded-for', function () {
       {headers: {'forwarded': '3.4.5.6'}, expected: '3.4.5.6'},
       {headers: {'x-real-ip': '7.8.9.10'}, expected: '7.8.9.10'},
     ];
-    
+
     // Fisher-Yates shuffle
     function shuffle(o){ //v1.0
         for (var j, x, i = o.length; i;
           j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
-    };
-    
+    }
+
     for (; i < 8; i++) {
       hs = shuffle(hs);
       hs.forEach(function(v) {
