@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/primus/forwarded-for.svg?branch=master)](https://travis-ci.org/primus/forwarded-for)
 [![NPM version](https://badge.fury.io/js/forwarded-for.svg)](http://badge.fury.io/js/forwarded-for)
+[![Coverage Status](https://img.shields.io/coveralls/primus/forwarded-for.svg)](https://coveralls.io/r/primus/forwarded-for?branch=master)
 
 When you are hosting your applications behind a reverse load balancer the
 incoming requests will no longer have the IP address of your user but of the
