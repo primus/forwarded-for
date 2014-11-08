@@ -1,3 +1,4 @@
+/* istanbul ignore next */
 describe('forwarded-for', function () {
   'use strict';
 
