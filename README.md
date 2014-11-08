@@ -1,8 +1,6 @@
 # forwarded-for
 
-[![Build Status](https://travis-ci.org/primus/forwarded-for.svg?branch=master)](https://travis-ci.org/primus/forwarded-for)
-[![NPM version](https://badge.fury.io/js/forwarded-for.svg)](http://badge.fury.io/js/forwarded-for)
-[![Coverage Status](https://img.shields.io/coveralls/primus/forwarded-for.svg)](https://coveralls.io/r/primus/forwarded-for?branch=master)
+[![Version npm](http://img.shields.io/npm/v/forwarded-for.svg?style=flat-square)](http://browsenpm.org/package/forwarded-for)[![Build Status](http://img.shields.io/travis/primus/forwarded-for/master.svg?style=flat-square)](https://travis-ci.org/primus/forwarded-for)[![Dependencies](https://img.shields.io/david/primus/forwarded-for.svg?style=flat-square)](https://david-dm.org/primus/forwarded-for)[![Coverage Status](http://img.shields.io/coveralls/primus/forwarded-for/master.svg?style=flat-square)](https://coveralls.io/r/primus/forwarded-for?branch=master)[![IRC channel](http://img.shields.io/badge/IRC-irc.freenode.net%23primus-00a8ff.svg?style=flat-square)](http://webchat.freenode.net/?channels=primus)
 
 When you are hosting your applications behind a reverse load balancer the
 incoming requests will no longer have the IP address of your user but of the
