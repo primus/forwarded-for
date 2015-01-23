@@ -2,7 +2,8 @@
 describe('forwarded-for', function () {
   'use strict';
 
-  var assume = require('assume')
+  var middleware = require('./middleware')
+    , assume = require('assume')
     , parser = require('./');
 
   it('is exposed as function', function () {
@@ -198,6 +199,29 @@ describe('forwarded-for', function () {
       assume(forwarded.ip).to.equal('1.2.3.4');
       assume(forwarded.port).to.equal(62191);
       assume(forwarded.secure).to.equal(false);
+    });
+  });
+
+  describe('middleware', function () {
+    it('is exported a function', function () {
+      assume(middleware).is.a('function');
+    });
+
+    it('returns a middleware layer', function () {
+      assume(middleware()).is.a('function');
+      assume(middleware().length).equals(3);
+    });
+
+    it('adds the ip information as `forwarded` property', function (next) {
+      var req = { remoteAddress: '127.1.2.0', remotePort: 490 }
+        , m = middleware();
+
+      m(req, {}, function () {
+        assume(req.forwarded).is.a('object');
+        assume(req.forwarded.port).equals(490);
+
+        next();
+      });
     });
   });
 });

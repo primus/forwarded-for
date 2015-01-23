@@ -1,6 +1,6 @@
 'use strict';
 
-var forwarded = require('../');
+var forwarded = require('./');
 
 /**
  * Add a simple middleware layer.
