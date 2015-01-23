@@ -37,9 +37,9 @@
   },
   "homepage": "https://github.com/primus/forwarded-for",
   "devDependencies": {
-    "assume": "0.0.x",
-    "istanbul": "0.3.2",
-    "mocha": "1.21.x",
+    "assume": "1.1.x",
+    "istanbul": "0.3.x",
+    "mocha": "2.1.x",
     "pre-commit": "0.0.x"
   }
 }
