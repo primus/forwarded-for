@@ -4,9 +4,9 @@
   "description": "Abstraction for retrieving ip address information from a Node.js connection. Searches for proxy headers before degrading req.address",
   "main": "index.js",
   "scripts": {
-    "coverage": "istanbul cover node_modules/.bin/_mocha",
+    "coverage": "istanbul cover _mocha",
     "test": "mocha",
-    "test-travis": "istanbul cover node_modules/.bin/_mocha --report lcovonly"
+    "test-travis": "istanbul cover _mocha --report lcovonly"
   },
   "repository": {
     "type": "git",
@@ -37,9 +37,9 @@
   },
   "homepage": "https://github.com/primus/forwarded-for",
   "devDependencies": {
-    "assume": "1.1.x",
+    "assume": "1.3.x",
     "istanbul": "0.3.x",
-    "mocha": "2.1.x",
-    "pre-commit": "1.0.x"
+    "mocha": "2.3.x",
+    "pre-commit": "1.1.x"
   }
 }
