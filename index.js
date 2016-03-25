@@ -64,7 +64,7 @@ function forwarded(headers, whitelist) {
     if (!(proxies[i].ip in headers)) continue;
 
     ports = (headers[proxies[i].port] || '').split(',');
-    ips = (headers[proxies[i].ip] || '').split(',');
+    ips = (headers[proxies[i].ip] || '').replace(/\s*,\s*/, ',').split(',');
     proto = (headers[proxies[i].proto] || 'http');
 
     //

@@ -61,19 +61,51 @@ describe('forwarded-for', function () {
     assume(forwarded.secure).to.equal(true);
   });
 
-  it('prefers the x-forwarded-* headers over the supplied object', function () {
-    var forwarded = parser({
-      remoteAddress: '127.1.2.0',
-      remotePort: 490
-    }, {
-      'x-forwarded-for': '72.1.80.224',
-      'x-forwarded-port': '9093',
-      'x-forwarded-proto': 'https'
+  describe('x-forwarded-* headers', function () {
+    it('prefer over the supplied object', function () {
+      var forwarded = parser({
+        remoteAddress: '127.1.2.0',
+        remotePort: 490
+      }, {
+        'x-forwarded-for': '72.1.80.224',
+        'x-forwarded-port': '9093',
+        'x-forwarded-proto': 'https'
+      });
+
+      assume(forwarded.ip).to.equal('72.1.80.224');
+      assume(forwarded.port).to.equal(9093);
+      assume(forwarded.secure).to.equal(true);
     });
 
-    assume(forwarded.ip).to.equal('72.1.80.224');
-    assume(forwarded.port).to.equal(9093);
-    assume(forwarded.secure).to.equal(true);
+    it('ensure header supports list with no spaces', function () {
+      var forwarded = parser({
+        remoteAddress: '127.1.2.0'
+      }, {
+        'x-forwarded-for': '72.1.80.224,10.0.1.1'
+      });
+
+      assume(forwarded.ip).to.equal('72.1.80.224');
+    });
+
+    it('ensure header supports list with spaces around commas', function () {
+      var forwarded = parser({
+        remoteAddress: '127.1.2.0'
+      }, {
+        'x-forwarded-for': '72.1.80.224, 10.0.1.1'
+      });
+
+      assume(forwarded.ip).to.equal('72.1.80.224');
+    });
+
+    it('ensure header is disqualified if invalid', function () {
+      var forwarded = parser({
+        remoteAddress: '127.1.2.0'
+      }, {
+        'x-forwarded-for': '72.1.80.224,999.0.1.1'
+      });
+
+      assume(forwarded.ip).to.equal('127.1.2.0');
+    });
   });
 
   it('works when shuffling the proxies array', function() {
