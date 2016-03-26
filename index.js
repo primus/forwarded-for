@@ -50,11 +50,11 @@ var proxies = [
 ];
 
 /**
- * Regex to match any comma surrounded by optional whitespace
+ * Regex to split a string into an array of its words.
  *
  * @type {RegExp}
  */
-var ipListSpaceFilter = /\s*,\s*/;
+var pattern = /[^\s,]+/g;
 
 /**
  * Search the headers for a possible match against a known proxy header.
@@ -71,7 +71,7 @@ function forwarded(headers, whitelist) {
     if (!(proxies[i].ip in headers)) continue;
 
     ports = (headers[proxies[i].port] || '').split(',');
-    ips = (headers[proxies[i].ip] || '').replace(ipListSpaceFilter, ',').split(',');
+    ips = (headers[proxies[i].ip] || '').match(pattern);
     proto = (headers[proxies[i].proto] || 'http');
 
     //
@@ -80,7 +80,7 @@ function forwarded(headers, whitelist) {
     // IP value inside the IP header field we are going to assume that this
     // header has been compromised and should be ignored
     //
-    if (!ips.length || !ips.every(net.isIP)) return;
+    if (!ips || !ips.every(net.isIP)) return;
 
     port = ports.shift();   // Extract the first port as it's the "source" port.
     ip = ips.shift();       // Extract the first IP as it's the "source" IP.
@@ -90,7 +90,7 @@ function forwarded(headers, whitelist) {
     // we're given are known and allowed.
     //
     if (whitelist && whitelist.length && !ips.every(function every(ip) {
-      return ~whitelist.indexOf(ip.trim());
+      return ~whitelist.indexOf(ip);
     })) return;
 
     //
