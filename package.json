@@ -1,6 +1,6 @@
 {
   "name": "forwarded-for",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Abstraction for retrieving ip address information from a Node.js connection. Searches for proxy headers before degrading req.address",
   "main": "index.js",
   "scripts": {
