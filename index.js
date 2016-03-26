@@ -50,6 +50,13 @@ var proxies = [
 ];
 
 /**
+ * Regex to match any comma surrounded by optional whitespace
+ *
+ * @type {RegExp}
+ */
+var ipListSpaceFilter = /\s*,\s*/;
+
+/**
  * Search the headers for a possible match against a known proxy header.
  *
  * @param {Object} headers The received HTTP headers.
@@ -64,7 +71,7 @@ function forwarded(headers, whitelist) {
     if (!(proxies[i].ip in headers)) continue;
 
     ports = (headers[proxies[i].port] || '').split(',');
-    ips = (headers[proxies[i].ip] || '').split(',');
+    ips = (headers[proxies[i].ip] || '').replace(ipListSpaceFilter, ',').split(',');
     proto = (headers[proxies[i].proto] || 'http');
 
     //
