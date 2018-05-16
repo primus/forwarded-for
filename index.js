@@ -61,7 +61,7 @@ var pattern = /[^\s,]+/g;
  *
  * @param {Object} headers The received HTTP headers.
  * @param {Array} whitelist White list of proxies that should be checked.
- * @returns {String|Undefined} A IP address or nothing.
+ * @returns {Forwarded|Undefined} A Forwarded address object or nothing.
  * @api private
  */
 function forwarded(headers, whitelist) {
@@ -123,7 +123,7 @@ function forwarded(headers, whitelist) {
  * @param {Object} obj A socket like object that could contain a `remoteAddress`.
  * @param {Object} headers The received HTTP headers.
  * @param {Array} whitelist White list
- * @returns {String} The IP address.
+ * @returns {Forwarded} A Forwarded address object.
  * @api private
  */
 function parse(obj, headers, whitelist) {
