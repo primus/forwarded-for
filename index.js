@@ -64,20 +64,20 @@ function forwarded(headers, whitelist) {
     if (!(proxies[i].ip in headers)) continue;
 
     ports = (headers[proxies[i].port] || '').split(',');
-	ips = (headers[proxies[i].ip] || '')
-		.split(',')
-		.map((entry, j) => {
-			if (net.isIPv6(entry))
-				return entry.trim();
-			else {
-				parts = entry.split(':');
-				if (parts[1]) {
-					ports.length = Math.max(j+1, ports.length);
-					ports[j] = parts[1].trim();
-				}
-				return parts[0].trim();
-			}
-		});
+    ips = (headers[proxies[i].ip] || '')
+      .split(',')
+      .map((entry, j) => {
+        if (net.isIPv6(entry))
+          return entry.trim();
+        else {
+          parts = entry.split(':');
+            if (parts[1]) {
+              ports.length = Math.max(j+1, ports.length);
+              ports[j] = parts[1].trim();
+            }
+          return parts[0].trim();
+        }
+      });
     proto = (headers[proxies[i].proto] || 'http');
 
     //
