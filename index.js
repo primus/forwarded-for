@@ -50,13 +50,6 @@ var proxies = [
 ];
 
 /**
- * Regex to split a string into an array of its words.
- *
- * @type {RegExp}
- */
-var pattern = /[^\s,]+/g;
-
-/**
  * Search the headers for a possible match against a known proxy header.
  *
  * @param {Object} headers The received HTTP headers.
@@ -65,13 +58,26 @@ var pattern = /[^\s,]+/g;
  * @api private
  */
 function forwarded(headers, whitelist) {
-  var ports, port, proto, ips, ip, length = proxies.length, i = 0;
+  var parts, ports, port, proto, ips, ip, length = proxies.length, i = 0;
 
   for (; i < length; i++) {
     if (!(proxies[i].ip in headers)) continue;
 
     ports = (headers[proxies[i].port] || '').split(',');
-    ips = (headers[proxies[i].ip] || '').match(pattern);
+    ips = (headers[proxies[i].ip] || '')
+      .split(',')
+      .map((entry, j) => {
+        if (net.isIPv6(entry))
+          return entry.trim();
+        else {
+          parts = entry.split(':');
+            if (parts[1]) {
+              ports.length = Math.max(j+1, ports.length);
+              ports[j] = parts[1].trim();
+            }
+          return parts[0].trim();
+        }
+      });
     proto = (headers[proxies[i].proto] || 'http');
 
     //

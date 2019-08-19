@@ -97,6 +97,17 @@ describe('forwarded-for', function () {
       assume(forwarded.ip).to.equal('72.1.80.224');
     });
 
+    it('ensure header supports ip:port syntax', function () {
+      var forwarded = parser({
+        remoteAddress: '127.1.2.0'
+      }, {
+        'x-forwarded-for': '72.1.80.224:3000,10.0.1.1:8000,172.16.10.1'
+      });
+
+      assume(forwarded.ip).to.equal('72.1.80.224');
+      assume(forwarded.port).to.equal(3000);
+    });
+
     it('ensure header is disqualified if invalid', function () {
       var forwarded = parser({
         remoteAddress: '127.1.2.0'
