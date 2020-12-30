@@ -4,7 +4,7 @@
   "description": "Abstraction for retrieving ip address information from a Node.js connection. Searches for proxy headers before degrading req.address",
   "main": "index.js",
   "scripts": {
-    "test": "c8 --reporter=html --reporter=text mocha"
+    "test": "c8 --reporter=lcov --reporter=text mocha"
   },
   "repository": {
     "type": "git",
