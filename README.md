@@ -1,6 +1,6 @@
 # forwarded-for
 
-[![Version npm](http://img.shields.io/npm/v/forwarded-for.svg?style=flat-square)](https://www.npmjs.com/package/forwarded-for)[![Build Status](https://img.shields.io/github/workflow/status/primus/forwarded-for/CI/master?label=CI&style=flat-square)](https://github.com/primus/forwarded-for/actions?query=workflow%3ACI+branch%3Amaster)[![Coverage Status](http://img.shields.io/coveralls/primus/forwarded-for/master.svg?style=flat-square)](https://coveralls.io/r/primus/forwarded-for?branch=master)
+[![Version npm](http://img.shields.io/npm/v/forwarded-for.svg?style=flat-square)](https://www.npmjs.com/package/forwarded-for)[![CI](https://img.shields.io/github/actions/workflow/status/primus/forwarded-for/ci.yml?branch=master&label=CI&style=flat-square)](https://github.com/primus/forwarded-for/actions?query=workflow%3ACI+branch%3Amaster)[![Coverage Status](http://img.shields.io/coveralls/primus/forwarded-for/master.svg?style=flat-square)](https://coveralls.io/r/primus/forwarded-for?branch=master)
 
 When you are hosting your applications behind a reverse load balancer the
 incoming requests will no longer have the IP address of your user but of the
